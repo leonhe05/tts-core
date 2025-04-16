@@ -14,12 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * REST Controller for managing API Keys.
- * Part of the Interfaces layer, interacts with the Application layer.
- */
 @RestController
-@RequestMapping("/api/keys")
 @RequiredArgsConstructor
 public class ApiKeyController {
 
@@ -55,12 +50,6 @@ public class ApiKeyController {
     public ResponseEntity<Void> decrementWords(@PathVariable String key, @RequestParam long wordsToDecrement) {
         apiKeyService.decrementWords(key, wordsToDecrement);
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/{key}/delete")
-    public ResponseEntity<Void> deleteApiKey(@PathVariable String key) {
-        apiKeyService.deleteApiKey(key);
-        return ResponseEntity.noContent().build();
     }
 
 } 

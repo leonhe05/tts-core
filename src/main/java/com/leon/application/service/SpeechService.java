@@ -1,52 +1,65 @@
 package com.leon.application.service;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
+import com.leon.application.dto.SynthesisRequest;
+import com.leon.common.config.AppProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okhttp3.FormBody;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class SpeechService {
 
-    // TODO: Inject necessary Baidu AI SDK client and configuration
+    private static final String TEXT_2_AUDIO_URL = "https://tsn.baidu.com/text2audio";
+    private final OkHttpClient httpClient;
+    private final AppProperties appProperties;
 
-    public byte[] synthesizeSpeech(String text) {
-        log.info("Starting speech synthesis for text: {}", text);
-        // TODO: Implement Baidu TTS API call
-        // This involves:
-        // 1. Setting up the Baidu AipSpeech client (authentication with App ID, API Key, Secret Key)
-        // 2. Setting synthesis parameters (text, voice type, speed, pitch, volume, format=wav/aue=3 or 6)
-        // 3. Making the API call (client.synthesis())
-        // 4. Handling the response:
-        //    - If successful, return the byte[] data
-        //    - If error (response JSON contains error code/message), throw an appropriate exception
-        //      (e.g., new BaiduApiException("TTS failed: " + errorMsg))
+    public byte[] synthesize(SynthesisRequest synthesisRequest) throws IOException {
+        FormBody formBody = getFormBody(synthesisRequest);
 
-        // Placeholder implementation:
-        if (text == null || text.trim().isEmpty()) {
-            // Consider throwing InvalidInputException here
-            log.warn("Synthesize speech called with empty text.");
-            return new byte[0]; // Return empty byte array for empty input
+        Request request = new Request.Builder()
+                .url(TEXT_2_AUDIO_URL)
+                .header("Authorization", "Bearer " + appProperties.getBaiduApiKey())
+                .post(formBody)
+                .build();
+
+        Response response = this.httpClient.newCall(request).execute();
+        ResponseBody responseBody = response.body();
+        Assert.isTrue(responseBody != null && response.isSuccessful(), "合成失败");
+
+        String contentType = response.header("Content-Type");
+        Assert.notNull(contentType, "合成失败");
+
+        if (contentType.startsWith("audio/")) {
+            return responseBody.bytes();
         }
-
-        log.warn("Placeholder implementation: Returning dummy WAV data for text: {}", text);
-        // Return a very short, simple dummy WAV header + minimal data as placeholder
-        // This is NOT a valid playable WAV for most purposes
-        return new byte[] {
-            'R', 'I', 'F', 'F', // ChunkID
-            0x24, 0, 0, 0,      // ChunkSize (minimal)
-            'W', 'A', 'V', 'E', // Format
-            'f', 'm', 't', ' ', // Subchunk1ID
-            16, 0, 0, 0,      // Subchunk1Size (PCM)
-            1, 0,             // AudioFormat (PCM=1)
-            1, 0,             // NumChannels (Mono=1)
-            (byte)0x80, 0x3E, 0, 0, // SampleRate (16000)
-            0x00, 0x7D, 0, 0, // ByteRate (SampleRate * NumChannels * BitsPerSample/8)
-            2, 0,             // BlockAlign (NumChannels * BitsPerSample/8)
-            16, 0,            // BitsPerSample (16)
-            'd', 'a', 't', 'a', // Subchunk2ID
-            0, 0, 0, 0       // Subchunk2Size (0 data bytes)
-        };
+        log.error("合成失败: [{}", responseBody.string());
+        return null;
     }
+
+    private FormBody getFormBody(SynthesisRequest synthesisRequest) {
+        return new FormBody.Builder(StandardCharsets.UTF_8)
+                .add("tex", synthesisRequest.getText())
+                .add("cuid", appProperties.getCUid())
+                .add("ctp", "1")
+                .add("lan", "zh")
+                .add("spd", synthesisRequest.getSpeed())
+                .add("pit", synthesisRequest.getPitch())
+                .add("vol", synthesisRequest.getVolume())
+                .add("per", synthesisRequest.getPerson())
+                .add("aue", "6")
+                .add("audio_ctrl", "{\"sampling_rate\":%d}".formatted(synthesisRequest.getAudioSample()))
+                .build();
+    }
+
 } 

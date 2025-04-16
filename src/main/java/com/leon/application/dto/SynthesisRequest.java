@@ -8,6 +8,16 @@ import lombok.AllArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SynthesisRequest {
+
     private String text;
-    // 可以根据需要添加其他参数，例如语速(spd)、音调(pit)、音量(vol)、发音人(per)等
-} 
+
+    private String person;
+
+    private String speed;
+
+    private String pitch;
+
+    private String volume;
+
+    private Integer audioSample;
+}

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.leon.domain.model.ApiKey;
 import com.leon.domain.repository.ApiKeyRepository;
 import com.leon.infrastructure.mapper.ApiKeyMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional; // Keep transactional for atomic operations
@@ -11,38 +12,23 @@ import org.springframework.transaction.annotation.Transactional; // Keep transac
 import java.util.List;
 import java.util.Optional;
 
-/**
- * MyBatis-Plus implementation of the ApiKeyRepository interface.
- */
-@Repository // Mark as a Spring repository component
+@Repository
+@RequiredArgsConstructor
 public class ApiKeyRepositoryImpl implements ApiKeyRepository {
 
     private final ApiKeyMapper apiKeyMapper;
 
-    @Autowired
-    public ApiKeyRepositoryImpl(ApiKeyMapper apiKeyMapper) {
-        this.apiKeyMapper = apiKeyMapper;
-    }
-
-    /**
-     * Saves (inserts or updates) an ApiKey.
-     * MyBatis-Plus BaseMapper's saveOrUpdate logic can be complex.
-     * Here we explicitly check existence first for clarity.
-     */
     @Override
     @Transactional
     public boolean save(ApiKey apiKey) {
         if (apiKey == null) {
             return false;
         }
-        // Check if exists
         ApiKey existing = apiKeyMapper.selectById(apiKey.getKey());
         int result;
         if (existing != null) {
-            // Update existing
             result = apiKeyMapper.updateById(apiKey);
         } else {
-            // Insert new
             result = apiKeyMapper.insert(apiKey);
         }
         return result > 0;
@@ -64,12 +50,8 @@ public class ApiKeyRepositoryImpl implements ApiKeyRepository {
         return apiKeyMapper.deleteById(key) > 0;
     }
 
-    /**
-     * Implements the atomic decrement using MyBatis-Plus UpdateWrapper.
-     * Replicates the logic from the old ServiceImpl.
-     */
     @Override
-    @Transactional // Ensure atomicity of the check-and-update
+    @Transactional
     public boolean decrementRemainWords(String key, long wordsToDecrement) {
          if (key == null || wordsToDecrement <= 0) {
             return false;
