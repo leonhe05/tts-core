@@ -1,4 +1,4 @@
-package com.leon.application.dto;
+package com.leon.application.protocol;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

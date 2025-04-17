@@ -22,7 +22,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- MyBatis Plus Version -->
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
     </properties>
 
@@ -33,6 +33,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
         <!-- MyBatis Plus Starter -->
         <dependency>
             <groupId>com.baomidou</groupId>

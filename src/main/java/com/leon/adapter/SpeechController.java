@@ -1,7 +1,7 @@
-package com.leon.controller;
+package com.leon.adapter;
 
-import com.leon.application.dto.SynthesisRequest;
-import com.leon.application.service.SpeechService;
+import com.leon.application.protocol.SynthesisRequest;
+import com.leon.application.service.SynthesisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -20,11 +19,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class SpeechController {
 
-    private final SpeechService speechService;
+    private final SynthesisService synthesisService;
 
     @PostMapping(value = "/synthesize", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<byte[]> synthesizeSpeech(@RequestBody SynthesisRequest synthesisRequest) throws IOException {
-        byte[] audioData = speechService.synthesize(synthesisRequest);
+    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest) throws IOException {
+        byte[] audioData = synthesisService.synthesize(synthesisRequest);
         return new ResponseEntity<>(audioData, withHeaders(), HttpStatus.OK);
     }
 

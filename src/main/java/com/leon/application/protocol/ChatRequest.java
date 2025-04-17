@@ -1,4 +1,4 @@
-package com.leon.application.dto;
+package com.leon.application.protocol;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

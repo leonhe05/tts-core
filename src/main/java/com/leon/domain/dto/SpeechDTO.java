@@ -1,13 +1,9 @@
-package com.leon.application.dto;
+package com.leon.domain.dto;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class SynthesisRequest {
+public class SpeechDTO {
 
     private String text;
 
