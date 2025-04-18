@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="10 seconds">
+
+    <property name="logPath" value="./logs/"/>
+    <property name="SERVICE_NAME" value="tts-core"/>
+
+    <!--历史日志文件个数限制，配置0为不限制数量-->
+    <property name="logMaxHistory" value="2333"/>
+
+    <springProperty scope="context" name="consoleLogPattern" source="CONSOLE_LOG_PATTERN"
+                    defaultValue="[%cyan(%date{yyyy-MM-dd HH:mm:ss.SSS})][%X{trace_id}][%X{span_id}][%X{traceId}][%X{parentId}][%X{spanId}][%X{logId}][%thread][%highlight(%-5level)][%yellow(%logger{36}:%line)][%blue(%M)] => %msg%n"/>
+    <springProperty scope="context" name="fileLogPattern" source="FILE_LOG_PATTERN"
+                    defaultValue="[%date{yyyy-MM-dd HH:mm:ss.SSS}][%X{trace_id}][%X{span_id}][%X{traceId}][%X{parentId}][%X{spanId}][%X{logId}][%thread][%-5level] [%logger{36}:%line][%M]=>%msg%n"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>${consoleLogPattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logPath}${SERVICE_NAME}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logPath}${SERVICE_NAME}.%d{yyyy-MM-dd}-%i.log</FileNamePattern>
+            <maxHistory>${logMaxHistory}</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>${fileLogPattern}</Pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="dailyRollingFileAppender"/>
+    </appender>
+    <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="stdout"/>
+    </appender>
+
+    <springProfile name="local">
+        <logger name="com.jlpay" level="DEBUG"/>
+        <logger name="org.springframework.cache" level="trace"/>
+        <root level="info">
+            <appender-ref ref="ASYNC_CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="test,dev">
+        <logger name="com.jlpay" level="DEBUG"/>
+        <logger name="org.springframework.cache" level="trace"/>
+        <root level="info">
+            <appender-ref ref="ASYNC_CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!local">
+        <root level="info">
+            <appender-ref ref="ASYNC_CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+        </root>
+    </springProfile>
+
+</configuration>
