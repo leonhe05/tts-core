@@ -19,7 +19,7 @@ public class BizExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public BaseResponse exceptionHandler(Exception e){
-        log.info("其他异常：{}", e.getMessage());
+        log.info("其他异常：", e);
         return BaseResponse.fail("96", "系统异常，请稍后重试");
     }
 
