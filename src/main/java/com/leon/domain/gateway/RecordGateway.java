@@ -4,6 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public interface RecordGateway {
 
-    void online(HttpServletRequest req, String userAgent, String origin);
+    void online(String ip, String userAgent, String origin);
 
 }

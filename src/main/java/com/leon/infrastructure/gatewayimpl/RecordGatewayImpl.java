@@ -16,9 +16,9 @@ public class RecordGatewayImpl implements RecordGateway {
     private final OnlineMapper onlineMapper;
 
     @Override
-    public void online(HttpServletRequest req, String userAgent, String origin) {
+    public void online(String ip, String userAgent, String origin) {
         onlineMapper.insert(Online.builder()
-                        .ip(req.getRemoteAddr())
+                        .ip(ip)
                         .origin(origin)
                         .userAgent(userAgent)
                         .time(new Date())

@@ -16,11 +16,11 @@ public class RecordController {
 
     @PostMapping("/online")
     public BaseResponse online(
-            HttpServletRequest request,
+            @RequestHeader(value = "X-Real-IP", required = false) String ip,
             @RequestHeader(value = "User-Agent", required = false) String userAgent,
             @RequestHeader(value = "Origin", required = false) String origin) {
 
-        recordGateway.online(request, userAgent, origin);
+        recordGateway.online(ip, userAgent, origin);
         return BaseResponse.success();
     }
 }
