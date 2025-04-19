@@ -16,7 +16,7 @@ public class SpeechContext {
 
     private List<Chat> chats;
 
-    private Integer audioSample;
+    private Integer quality;
 
     @Data
     public static class Chat {
@@ -97,35 +97,6 @@ public class SpeechContext {
             }
         }
         chats = merged;
-    }
-
-    public static void main(String[] args) {
-        SpeechContext speechContext = new SpeechContext();
-        Chat chat1 = new Chat();
-        chat1.setText("你是谁，我是你爹哈");
-        chat1.setPerson("1001");
-        Chat chat2 = new Chat();
-        chat2.setText("还是同一个人，这把长一点，我就不信了，怎么说哈哈哈。");
-        chat2.setPerson("1001");
-
-        Chat chat3 = new Chat();
-        chat3.setText("另一个人了");
-        chat3.setPerson("1002");
-
-        Chat chat4 = new Chat();
-        chat4.setText("还是同一个人，但不在一起，还阿斯蒂芬是同个人，但不在一起");
-        chat4.setPerson("1001");
-
-        Chat chat5 = new Chat();
-        chat5.setText("耶");
-        chat5.setPerson("1001");
-
-        speechContext.setChats(List.of(chat1, chat2, chat3, chat4, chat5));
-
-        speechContext.optimize();
-
-        List<Chat> a = speechContext.getChats();
-        System.out.println();
     }
 
 }

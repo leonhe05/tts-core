@@ -15,5 +15,5 @@ public class SpeechDTO {
 
     private String volume;
 
-    private Integer audioSample;
+    private Integer quality;
 }

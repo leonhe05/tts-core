@@ -10,6 +10,6 @@ public interface Converter {
 
     Converter INSTANCE = Mappers.getMapper(Converter.class);
 
-    SpeechDTO of(SpeechContext.Chat chat, Integer audioSample);
+    SpeechDTO of(SpeechContext.Chat chat, Integer quality);
 
 }

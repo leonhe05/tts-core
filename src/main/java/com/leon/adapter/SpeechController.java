@@ -8,21 +8,26 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class SpeechController {
 
     private final SynthesisService synthesisService;
 
     @PostMapping(value = "/synthesize", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest) throws IOException {
+    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest) throws IOException, UnsupportedAudioFileException {
         byte[] audioData = synthesisService.synthesize(synthesisRequest);
         return new ResponseEntity<>(audioData, withHeaders(), HttpStatus.OK);
     }
@@ -30,7 +35,7 @@ public class SpeechController {
     private HttpHeaders withHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("audio/wav"));
-        headers.set("Content-Disposition", "attachment; filename=\"output.wav\"");
+        headers.set("Content-Disposition", "attachment; filename=\"" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".wav\"");
         return headers;
     }
 } 

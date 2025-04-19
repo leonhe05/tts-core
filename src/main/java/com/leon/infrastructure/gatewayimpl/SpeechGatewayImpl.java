@@ -55,7 +55,7 @@ public class SpeechGatewayImpl implements SpeechGateway {
                 .add("vol", speechDTO.getVolume())
                 .add("per", speechDTO.getPerson())
                 .add("aue", "6")
-                .add("audio_ctrl", "{\"sampling_rate\":%d}".formatted(speechDTO.getAudioSample()))
+                .add("audio_ctrl", "{\"sampling_rate\":24000}")
                 .build();
     }
 }

@@ -5,9 +5,11 @@ import com.leon.domain.aggregate.SpeechContext;
 import com.leon.domain.gateway.SpeechGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayOutputStream;
+import com.leon.common.AudioUtils;
+import javax.sound.sampled.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,22 +17,25 @@ public class SpeechService {
 
     private final SpeechGateway speechGateway;
 
-    public byte[] speech(SpeechContext speechContext) throws IOException {
+    public byte[] speech(SpeechContext speechContext) throws IOException, UnsupportedAudioFileException {
         speechContext.optimize();
 
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-            speechContext.getChats().forEach(chat -> {
-                try {
-                    outputStream.write(
-                            speechGateway.speech(Converter.INSTANCE.of(chat, speechContext.getAudioSample()))
-                    );
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            return outputStream.toByteArray();
+        if (speechContext.getChats().isEmpty()) {
+            return new byte[0];
         }
+
+        List<byte[]> audioSegments = new ArrayList<>();
+        for (var chat : speechContext.getChats()) {
+            try {
+                audioSegments.add(
+                        speechGateway.speech(Converter.INSTANCE.of(chat, speechContext.getQuality()))
+                );
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to generate speech for a chat segment.", e);
+            }
+        }
+
+        return AudioUtils.mergeWavByteArrays(audioSegments);
     }
 
 }

@@ -13,7 +13,7 @@ public class SynthesisRequest {
 
     private List<Chat> chats;
 
-    private Integer audioSample;
+    private Integer quality;
 
     private String userId;
 
