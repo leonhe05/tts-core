@@ -5,7 +5,6 @@ import com.leon.domain.aggregate.SpeechContext;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-
 @Mapper
 public interface Converter {
 

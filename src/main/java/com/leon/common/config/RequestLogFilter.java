@@ -27,8 +27,11 @@ public class RequestLogFilter extends HttpFilter {
 
         int status = response.getStatus();
         byte[] responseContent = cachingResponse.getContentAsByteArray();
-
-        log.info("响应 <= {} {}", status, new String(responseContent));
+        if (uri.equals("/synthesize")) {
+            log.info("响应 <= {}", status);
+        } else {
+            log.info("响应 <= {} {}", status, new String(responseContent));
+        }
         MDC.remove("trace_id");
         cachingResponse.copyBodyToResponse();
     }

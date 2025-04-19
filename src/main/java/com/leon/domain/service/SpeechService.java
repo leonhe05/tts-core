@@ -15,22 +15,22 @@ public class SpeechService {
 
     private final SpeechGateway speechGateway;
 
-    public byte[] speech(SpeechContext speechContext) {
+    public byte[] speech(SpeechContext speechContext) throws IOException {
         speechContext.optimize();
 
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
-        speechContext.getChats().forEach(chat -> {
-            try {
-                outputStream.write(
-                        speechGateway.speech(Converter.INSTANCE.of(chat, speechContext.getAudioSample()))
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        return outputStream.toByteArray();
+            speechContext.getChats().forEach(chat -> {
+                try {
+                    outputStream.write(
+                            speechGateway.speech(Converter.INSTANCE.of(chat, speechContext.getAudioSample()))
+                    );
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            return outputStream.toByteArray();
+        }
     }
 
 }
