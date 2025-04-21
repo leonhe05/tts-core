@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -17,7 +20,7 @@ public class SynthesisService {
     private final SpeechService speechService;
     private final UserRepository userRepository;
 
-    public byte[] synthesize(SynthesisRequest synthesisRequest) {
+    public byte[] synthesize(SynthesisRequest synthesisRequest) throws UnsupportedAudioFileException, IOException {
         SpeechContext speechContext = Converter.INSTANCE.of(synthesisRequest);
 
         int consume = speechContext.getConsumeWords();
