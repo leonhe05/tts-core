@@ -6,10 +6,11 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.AlipayConfig;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
+import com.leon.domain.gateway.AlipayLoginGateway;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AlipayLoginGatewayImpl {
+public class AlipayLoginGatewayImpl implements AlipayLoginGateway {
 
     private final AlipayClient alipayClient;
 
@@ -17,24 +18,12 @@ public class AlipayLoginGatewayImpl {
         alipayClient = new DefaultAlipayClient(getAlipayConfig());
     }
 
-
     public String getAlipayOpenId(String code) throws AlipayApiException {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setCode(code);
         request.setGrantType("authorization_code");
         AlipaySystemOauthTokenResponse response = alipayClient.execute(request);
-        System.out.println(response.getOpenId());
-        if (response.isSuccess()) {
-            System.out.println("调用成功");
-        } else {
-            System.out.println("调用失败");
-        }
         return response.getOpenId();
-    }
-
-    public static void main(String[] args) throws AlipayApiException {
-        AlipayLoginGatewayImpl impl = new AlipayLoginGatewayImpl();
-        impl.getAlipayOpenId("16d8bb1a1af64bfd8a09a76269edRX35");
     }
 
     private static AlipayConfig getAlipayConfig() {

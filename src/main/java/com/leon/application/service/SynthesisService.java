@@ -20,20 +20,20 @@ public class SynthesisService {
     private final SpeechService speechService;
     private final UserRepository userRepository;
 
-    public byte[] synthesize(SynthesisRequest synthesisRequest) throws UnsupportedAudioFileException, IOException {
+    public byte[] synthesize(SynthesisRequest synthesisRequest, String userId) throws UnsupportedAudioFileException, IOException {
         SpeechContext speechContext = Converter.INSTANCE.of(synthesisRequest);
 
         int consume = speechContext.getConsumeWords();
         if (consume == 0) {
             return new byte[]{};
         }
-        userRepository.consume(synthesisRequest.getUserId(), consume);
+        userRepository.consume(userId, consume);
 
         try {
             return speechService.speech(speechContext);
         } catch (Exception e) {
-            log.info("合成失败，ID[{}]，返还额度[{}]", synthesisRequest.getUserId(), speechContext.getConsumeWords());
-            userRepository.returnWords(synthesisRequest.getUserId(), speechContext.getConsumeWords());
+            log.info("合成失败，ID[{}]，返还额度[{}]", userId, speechContext.getConsumeWords());
+            userRepository.returnWords(userId, speechContext.getConsumeWords());
             throw e;
         }
     }

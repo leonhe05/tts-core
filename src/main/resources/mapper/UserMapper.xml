@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leon.infrastructure.mapper.UserMapper">
+
+    <select id="selectByOpenId" resultType="com.leon.domain.aggregate.User">
+        SELECT user_id, open_id, total_words, remain_words
+        FROM user
+        WHERE open_id = #{openId}
+    </select>
+
+</mapper> 

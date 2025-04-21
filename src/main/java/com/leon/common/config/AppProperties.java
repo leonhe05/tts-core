@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(value = "leon.biz")
 public class AppProperties {
 
-    private String baiduApiKey = "";
+    private String baiduApiKey;
 
     private String aliApiKey;
 

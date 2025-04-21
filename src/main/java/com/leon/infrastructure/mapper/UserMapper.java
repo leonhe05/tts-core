@@ -5,4 +5,8 @@ import com.leon.domain.aggregate.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface UserMapper extends BaseMapper<User> {}
+public interface UserMapper extends BaseMapper<User> {
+
+    User selectByOpenId(String openId);
+
+}
