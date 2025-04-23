@@ -2,15 +2,12 @@ package com.leon.adapter;
 
 import com.leon.application.protocol.BaseResponse;
 import com.leon.application.protocol.OrderRequest;
-import com.leon.application.protocol.OrderResponse;
 import com.leon.application.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class OrderController {

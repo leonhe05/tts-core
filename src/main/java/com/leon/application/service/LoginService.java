@@ -42,4 +42,13 @@ public class LoginService {
 
         return LoginResponse.of(token, user.getUserId(), user.getRemainWords());
     }
+
+    public LoginResponse refresh(String userId) {
+        User user = userRepository.findByUserId(userId);
+        String token = JwtUtils.generateToken(user.getUserId());
+
+        return LoginResponse.of(token, user.getUserId(), user.getRemainWords());
+    }
+
+
 } 

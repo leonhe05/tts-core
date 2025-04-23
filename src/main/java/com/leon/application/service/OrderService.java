@@ -62,6 +62,9 @@ public class OrderService {
         if ("18".equals(amount)) {
             return 100000;
         }
+        if ("80".equals(amount)) {
+            return 500000;
+        }
         if ("138".equals(amount)) {
             return 1000000;
         }

@@ -18,4 +18,9 @@ public class LoginController {
     public BaseResponse login(@RequestBody LoginRequest loginRequest) {
         return loginService.login(loginRequest.getCode());
     }
+
+    @PostMapping("/refresh")
+    public BaseResponse refresh(@RequestHeader("User-Id") String userId) {
+        return loginService.refresh(userId);
+    }
 } 
