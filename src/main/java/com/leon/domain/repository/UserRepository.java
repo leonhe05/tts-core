@@ -10,6 +10,8 @@ public interface UserRepository {
 
     User findByOpenId(String openId);
 
+    User findByUserId(String userId);
+
     User saveOrUpdateByOpenId(User user);
 
 } 

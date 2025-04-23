@@ -4,17 +4,28 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.AlipayConfig;
+import com.alipay.api.domain.AlipayTradePagePayModel;
+import com.alipay.api.domain.AlipayTradeQueryModel;
+import com.alipay.api.request.AlipayTradePagePayRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
-import com.leon.domain.gateway.AlipayLoginGateway;
+import com.alipay.api.response.AlipayTradePagePayResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.leon.common.BizAssert;
+import com.leon.common.JsonUtils;
+import com.leon.common.exception.BizException;
+import com.leon.domain.gateway.AlipayGateway;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
-public class AlipayLoginGatewayImpl implements AlipayLoginGateway {
+public class AlipayGatewayImpl implements AlipayGateway {
 
     private final AlipayClient alipayClient;
 
-    public AlipayLoginGatewayImpl() throws AlipayApiException {
+    public AlipayGatewayImpl() throws AlipayApiException {
         alipayClient = new DefaultAlipayClient(getAlipayConfig());
     }
 
@@ -24,6 +35,49 @@ public class AlipayLoginGatewayImpl implements AlipayLoginGateway {
         request.setGrantType("authorization_code");
         AlipaySystemOauthTokenResponse response = alipayClient.execute(request);
         return response.getOpenId();
+    }
+
+    public String submitOrder(String orderId, String amount, String subject) {
+        AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
+        AlipayTradePagePayModel model = new AlipayTradePagePayModel();
+
+        model.setOutTradeNo(orderId);
+        model.setTotalAmount(amount);
+        model.setSubject(subject);
+        model.setProductCode("FAST_INSTANT_TRADE_PAY");
+        model.setQrPayMode("4");
+        model.setQrcodeWidth(200L);
+        request.setBizModel(model);
+
+        log.info(JsonUtils.toString(model));
+
+        AlipayTradePagePayResponse response;
+        try {
+            response = alipayClient.pageExecute(request, "POST");
+        } catch (AlipayApiException e) {
+            throw new BizException("51", "唤起支付异常");
+        }
+
+        BizAssert.isTrue(response.isSuccess(), "52", response.getMsg());
+        return response.getBody();
+    }
+
+    public String queryOrder(String orderId) {
+        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+        AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+        model.setOutTradeNo(orderId);
+
+        log.info(JsonUtils.toString(model));
+        request.setBizModel(model);
+        AlipayTradeQueryResponse response;
+        try {
+             response = alipayClient.execute(request);
+        } catch (AlipayApiException e) {
+            throw new BizException("53", "查询订单结果异常");
+        }
+        BizAssert.isTrue(response.isSuccess(), "53", response.getMsg());
+
+        return response.getTradeStatus();
     }
 
     private static AlipayConfig getAlipayConfig() {

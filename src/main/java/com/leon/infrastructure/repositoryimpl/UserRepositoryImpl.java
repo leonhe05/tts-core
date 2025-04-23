@@ -45,6 +45,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findByUserId(String userId) {
+        return userMapper.selectById(userId);
+    }
+
+    @Override
     @Transactional
     public User saveOrUpdateByOpenId(User user) {
         User existingUser = findByOpenId(user.getOpenId());

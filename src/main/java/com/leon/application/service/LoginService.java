@@ -4,7 +4,7 @@ import com.leon.application.protocol.LoginResponse;
 import com.leon.common.BizAssert;
 import com.leon.common.JwtUtils;
 import com.leon.domain.aggregate.User;
-import com.leon.domain.gateway.AlipayLoginGateway;
+import com.leon.domain.gateway.AlipayGateway;
 import com.leon.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final AlipayLoginGateway alipayLoginGateway;
+    private final AlipayGateway alipayGateway;
     private final UserRepository userRepository;
     private static final long INITIAL_REMAIN_WORDS = 2000L;
     private static final long INITIAL_TOTAL_WORDS = 2000L;
@@ -25,7 +25,7 @@ public class LoginService {
 
         String openId;
         try {
-            openId = alipayLoginGateway.getAlipayOpenId(code);
+            openId = alipayGateway.getAlipayOpenId(code);
             log.info("Retrieved openId: {}", openId);
         } catch (Exception e) {
             throw new RuntimeException("获取支付宝用户信息失败");
