@@ -3,13 +3,14 @@ package com.leon.common.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import java.util.List;
 
 @Data
 @Configuration
 @ConfigurationProperties(value = "leon.biz")
 public class AppProperties {
 
-    private String baiduApiKey;
+    private List<String> baiduApiKey;
 
     private String aliApiKey;
 

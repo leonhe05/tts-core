@@ -28,7 +28,7 @@ public class SpeechGatewayImpl implements SpeechGateway {
 
         Request request = new Request.Builder()
                 .url(TEXT_2_AUDIO_URL)
-                .header("Authorization", "Bearer " + appProperties.getBaiduApiKey())
+                .header("Authorization", "Bearer " + appProperties.getBaiduApiKey().stream().findAny().get())
                 .post(formBody)
                 .build();
         log.info("向百度发起语音合成请求: [{}]", JsonUtils.toString(speechDTO));

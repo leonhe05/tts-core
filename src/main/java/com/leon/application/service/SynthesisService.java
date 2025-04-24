@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -20,7 +21,7 @@ public class SynthesisService {
     private final SpeechService speechService;
     private final UserRepository userRepository;
 
-    public byte[] synthesize(SynthesisRequest synthesisRequest, String userId) throws UnsupportedAudioFileException, IOException {
+    public byte[] synthesize(SynthesisRequest synthesisRequest, String userId) throws UnsupportedAudioFileException, IOException, ExecutionException, InterruptedException {
         SpeechContext speechContext = Converter.INSTANCE.of(synthesisRequest);
 
         int consume = speechContext.getConsumeWords();

@@ -10,29 +10,41 @@ import javax.sound.sampled.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 @Service
 @RequiredArgsConstructor
 public class SpeechService {
 
     private final SpeechGateway speechGateway;
+    private final static ExecutorService executor = Executors.newFixedThreadPool(30);
 
-    public byte[] speech(SpeechContext speechContext) throws IOException, UnsupportedAudioFileException {
+    public byte[] speech(SpeechContext speechContext) throws IOException, UnsupportedAudioFileException, ExecutionException, InterruptedException {
         speechContext.optimize();
 
         if (speechContext.getChats().isEmpty()) {
             return new byte[0];
         }
 
+        Semaphore  semaphore = new Semaphore(2);
+
         List<byte[]> audioSegments = new ArrayList<>();
+        List<Future<byte[]>> futures = new ArrayList<>();
         for (var chat : speechContext.getChats()) {
-            try {
-                audioSegments.add(
-                        speechGateway.speech(Converter.INSTANCE.of(chat, speechContext.getQuality()))
-                );
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to generate speech for a chat segment.", e);
-            }
+            futures.add(executor.submit(() -> {
+                try {
+                    semaphore.acquire();
+                    return speechGateway.speech(Converter.INSTANCE.of(chat, speechContext.getQuality()));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    semaphore.release();
+                }
+            }));
+        }
+
+        for (Future<byte[]> future : futures) {
+            audioSegments.add(future.get());
         }
 
         return AudioUtils.mergeWavByteArrays(audioSegments);

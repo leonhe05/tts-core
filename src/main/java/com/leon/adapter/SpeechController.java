@@ -14,6 +14,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RestController
@@ -23,7 +24,7 @@ public class SpeechController {
     private final SynthesisService synthesisService;
 
     @PostMapping(value = "/synthesize", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest, @RequestHeader("User-Id") String userId) throws IOException, UnsupportedAudioFileException {
+    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest, @RequestHeader("User-Id") String userId) throws IOException, UnsupportedAudioFileException, ExecutionException, InterruptedException {
         byte[] audioData = synthesisService.synthesize(synthesisRequest, userId);
         return new ResponseEntity<>(audioData, withHeaders(), HttpStatus.OK);
     }
