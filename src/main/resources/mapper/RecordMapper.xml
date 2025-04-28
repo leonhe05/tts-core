@@ -5,7 +5,7 @@
 <mapper namespace="com.leon.infrastructure.mapper.RecordMapper">
 
     <select id="getTodayWords">
-        SELECT count(length)
+        SELECT sum(length)
         FROM record
         WHERE ip  = #{ip}
         and create_time >= date(now())
