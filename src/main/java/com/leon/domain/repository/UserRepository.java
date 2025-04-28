@@ -14,4 +14,5 @@ public interface UserRepository {
 
     User saveOrUpdateByOpenId(User user);
 
+    void save(User user);
 } 

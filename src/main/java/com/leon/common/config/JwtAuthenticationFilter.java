@@ -21,7 +21,7 @@ import java.util.*;
 public class JwtAuthenticationFilter implements Filter {
 
     private final ObjectMapper objectMapper;
-    private final Set<String> excludedPaths = Set.of("/login", "/actuator/health", "/online");
+    private final Set<String> excludedPaths = Set.of("/login", "/actuator/health", "/online", "/normal-login", "/register");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

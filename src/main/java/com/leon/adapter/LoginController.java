@@ -19,6 +19,16 @@ public class LoginController {
         return loginService.login(loginRequest.getCode());
     }
 
+    @PostMapping("/normal-login")
+    public BaseResponse normalLogin(@RequestBody LoginRequest loginRequest) {
+        return loginService.normalLogin(loginRequest);
+    }
+
+    @PostMapping("/register")
+    public BaseResponse register(@RequestBody LoginRequest loginRequest) {
+        return loginService.register(loginRequest);
+    }
+
     @PostMapping("/refresh")
     public BaseResponse refresh(@RequestHeader("User-Id") String userId) {
         return loginService.refresh(userId);

@@ -1,5 +1,7 @@
 package com.leon.application.service;
 
+import com.leon.application.protocol.BaseResponse;
+import com.leon.application.protocol.LoginRequest;
 import com.leon.application.protocol.LoginResponse;
 import com.leon.common.BizAssert;
 import com.leon.common.JwtUtils;
@@ -50,5 +52,25 @@ public class LoginService {
         return LoginResponse.of(token, user.getUserId(), user.getRemainWords());
     }
 
+    public LoginResponse normalLogin(LoginRequest loginRequest) {
+        User user = userRepository.findByUserId(loginRequest.getUserId());
+        BizAssert.isNotNull(user, "01", "用户不存在");
+        BizAssert.isTrue(user.getOpenId().equals(loginRequest.getPassword()), "02", "密码错误");
 
+        String token = JwtUtils.generateToken(user.getUserId());
+        return LoginResponse.of(token, user.getUserId(), user.getRemainWords());
+    }
+
+    public BaseResponse register(LoginRequest loginRequest) {
+        User userToSave = User.builder()
+                .userId(loginRequest.getUserId())
+                .openId(loginRequest.getPassword())
+                .remainWords(0L)
+                .totalWords(0L)
+                .build();
+
+        BizAssert.isNull(userRepository.findByUserId(loginRequest.getUserId()), "01", "用户已存在");
+        userRepository.save(userToSave);
+        return BaseResponse.success();
+    }
 } 
