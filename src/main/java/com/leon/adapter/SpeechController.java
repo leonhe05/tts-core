@@ -24,8 +24,10 @@ public class SpeechController {
     private final SynthesisService synthesisService;
 
     @PostMapping(value = "/synthesize", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest, @RequestHeader("User-Id") String userId) throws IOException, UnsupportedAudioFileException, ExecutionException, InterruptedException {
-        byte[] audioData = synthesisService.synthesize(synthesisRequest, userId);
+    public ResponseEntity<byte[]> synthesize(@RequestBody SynthesisRequest synthesisRequest,
+                                             @RequestHeader(value = "X-Real-IP", required = false) String ip,
+                                             @RequestHeader(value = "User-Id", required = false) String userId) throws IOException, UnsupportedAudioFileException, ExecutionException, InterruptedException {
+        byte[] audioData = synthesisService.synthesize(synthesisRequest, userId, ip);
         return new ResponseEntity<>(audioData, withHeaders(), HttpStatus.OK);
     }
 

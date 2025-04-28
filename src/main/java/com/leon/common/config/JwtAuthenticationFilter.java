@@ -38,6 +38,10 @@ public class JwtAuthenticationFilter implements Filter {
         }
 
         String token = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!StringUtils.hasText(token) && path.equals("/synthesize")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (!StringUtils.hasText(token)) {
             log.warn("Missing JWT token for path: {}", path);

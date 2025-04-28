@@ -44,6 +44,15 @@ public class SpeechContext {
         }
     }
 
+    public String getDigest() {
+        String text = chats.get(0).getText();
+
+        if (text.length() > 100) {
+            return text.substring(0, 100);
+        }
+        return text;
+    }
+
     public int getConsumeWords() {
         int sum = 0;
         if (CollectionUtils.isEmpty(chats)) {
