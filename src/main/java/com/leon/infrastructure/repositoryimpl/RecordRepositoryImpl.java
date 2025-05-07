@@ -30,7 +30,7 @@ public class RecordRepositoryImpl implements RecordRepository {
     }
 
     @Override
-    public void recordWithoutLimit(String ip, String content, int length) {
+    public void recordWithUser(String ip, String content, int length) {
         recordMapper.insert(Record.builder()
                 .ip(ip)
                 .content(content)
