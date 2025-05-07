@@ -35,6 +35,7 @@ public class SynthesisService {
             recordRepository.record(ip, speechContext.getDigest(), consume);
         } else {
             userRepository.consume(userId, consume);
+            recordRepository.recordWithoutLimit(ip, speechContext.getDigest(), consume);
         }
 
         try {
