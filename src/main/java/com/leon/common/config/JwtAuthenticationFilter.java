@@ -91,7 +91,6 @@ public class JwtAuthenticationFilter implements Filter {
 
     private void sendUnauthorizedError(HttpServletResponse response, String message)
             throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         BaseResponse errorResponse = BaseResponse.fail("41", message);
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
