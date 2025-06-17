@@ -37,16 +37,6 @@ public class AudioUtils {
                 if (firstStream == null) {
                     firstStream = audioInputStream;
                     audioFormat = firstStream.getFormat();
-                } else {
-                    if (!audioFormat.matches(audioInputStream.getFormat())) {
-                        for (AudioInputStream openedStream : audioStreamList) {
-                            openedStream.close();
-                        }
-                        for(ByteArrayInputStream bais : inputStreamVector) {
-                            bais.close();
-                        }
-                        throw new UnsupportedAudioFileException("Audio formats do not match for merging.");
-                    }
                 }
                 long frameLength = audioInputStream.getFrameLength();
                 if (frameLength == AudioSystem.NOT_SPECIFIED) {
