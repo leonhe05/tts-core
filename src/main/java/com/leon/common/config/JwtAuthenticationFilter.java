@@ -21,7 +21,7 @@ import java.util.*;
 public class JwtAuthenticationFilter implements Filter {
 
     private final ObjectMapper objectMapper;
-    private final Set<String> excludedPaths = Set.of("/login", "/actuator/health", "/online", "/normal-login", "/register");
+    private final Set<String> excludedPaths = Set.of("/login", "/actuator/health", "/online", "/normal-login", "/register", "/game");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter implements Filter {
 
         String path = httpRequest.getRequestURI();
 
-        if (excludedPaths.contains(path)) {
+        if (excludedPaths.contains(path) || path.startsWith("/game")) {
             chain.doFilter(request, response);
             return;
         }
