@@ -45,8 +45,12 @@ public class GameService {
                     .currentSkin("default")
                     .createTime(LocalDateTime.now())
                     .updateTime(LocalDateTime.now())
+                    .loginTime(LocalDateTime.now())
                     .build();
-            gameUserRepository.saveOrUpdate(newUser);
+            gameUserRepository.save(newUser);
+        } else {
+            user.setLoginTime(LocalDateTime.now());
+            gameUserRepository.update(user);
         }
 
         return GameLoginResponse.of(openId);

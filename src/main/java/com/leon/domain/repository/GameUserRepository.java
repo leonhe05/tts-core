@@ -6,7 +6,9 @@ public interface GameUserRepository {
 
     GameUser findByOpenId(String openId);
 
-    GameUser saveOrUpdate(GameUser gameUser);
+    void save(GameUser gameUser);
+
+    void update(GameUser gameUser);
 
     boolean updateScore(String openId, int score);
 

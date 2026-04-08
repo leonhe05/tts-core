@@ -36,4 +36,6 @@ public class GameUser {
 
     private LocalDateTime updateTime;
 
+    private LocalDateTime loginTime;
+
 }

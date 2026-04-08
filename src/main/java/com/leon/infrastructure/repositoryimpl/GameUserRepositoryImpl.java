@@ -20,21 +20,13 @@ public class GameUserRepositoryImpl implements GameUserRepository {
     }
 
     @Override
-    public GameUser saveOrUpdate(GameUser gameUser) {
-        GameUser existing = gameUserMapper.selectByOpenId(gameUser.getOpenId());
-        if (existing == null) {
-            gameUserMapper.insert(gameUser);
-            return gameUser;
-        } else {
-            if (gameUser.getNickName() != null) {
-                existing.setNickName(gameUser.getNickName());
-            }
-            if (gameUser.getAvatarUrl() != null) {
-                existing.setAvatarUrl(gameUser.getAvatarUrl());
-            }
-            gameUserMapper.updateById(existing);
-            return existing;
-        }
+    public void save(GameUser gameUser) {
+        gameUserMapper.insert(gameUser);
+    }
+
+    @Override
+    public void update(GameUser gameUser) {
+        gameUserMapper.updateById(gameUser);
     }
 
     @Override
