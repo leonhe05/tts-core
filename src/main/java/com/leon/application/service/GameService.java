@@ -1,6 +1,7 @@
 package com.leon.application.service;
 
 import com.leon.application.protocol.*;
+import com.leon.application.protocol.CoinDeductRequest;
 import com.leon.common.BizAssert;
 import com.leon.domain.aggregate.GameUser;
 import com.leon.domain.gateway.WechatGateway;
@@ -125,6 +126,23 @@ public class GameService {
 
         GameUser user = gameUserRepository.findByOpenId(request.getOpenId());
         return GameCoinsResponse.of(user.getCoins());
+    }
+
+    @Transactional
+    public GameCoinsResponse deductCoin(CoinDeductRequest request) {
+        BizAssert.isNotBlank(request.getOpenId(), "11", "openId不能为空");
+        BizAssert.isTrue(request.getCoinNum() != null && request.getCoinNum() > 0, "19", "扣减金币数量无效");
+
+        GameUser user = gameUserRepository.findByOpenId(request.getOpenId());
+        BizAssert.isNotNull(user, "12", "用户不存在");
+
+        BizAssert.isTrue(user.getCoins() >= request.getCoinNum(), "17", "金币不足");
+
+        boolean success = gameUserRepository.deductCoins(request.getOpenId(), request.getCoinNum());
+        BizAssert.isTrue(success, "18", "扣除金币失败");
+
+        GameUser updatedUser = gameUserRepository.findByOpenId(request.getOpenId());
+        return GameCoinsResponse.of(updatedUser.getCoins());
     }
 
     @Transactional

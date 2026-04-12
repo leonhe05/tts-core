@@ -34,6 +34,11 @@ public class GameController {
         return gameService.addCoin(request);
     }
 
+    @PostMapping("/coin/deduct")
+    public BaseResponse deductCoin(@RequestBody CoinDeductRequest request) {
+        return gameService.deductCoin(request);
+    }
+
     @PostMapping("/skin/buy")
     public BaseResponse buySkin(@RequestBody GameBuySkinRequest request) {
         return gameService.buySkin(request);
@@ -52,6 +57,39 @@ public class GameController {
     @PostMapping("/rank/all")
     public BaseResponse getAllTimeRank(@RequestBody GameRankRequest request) {
         return gameService.getAllTimeRank(request);
+    }
+
+    /**
+     * 微信服务器验证接口（GET请求）
+     * 用于配置消息推送URL时的验证
+     */
+    @GetMapping("/wechat/callback")
+    public String verifyWechatServer(
+            @RequestParam("signature") String signature,
+            @RequestParam("timestamp") String timestamp,
+            @RequestParam("nonce") String nonce,
+            @RequestParam("echostr") String echostr) {
+
+        log.info("收到微信服务器验证请求: signature={}, timestamp={}, nonce={}, echostr={}",
+                signature, timestamp, nonce, echostr);
+        return echostr;
+    }
+
+    /**
+     * 接收微信消息推送（POST请求）
+     */
+    @PostMapping("/wechat/callback")
+    public WxCallbackResp receiveWechatMessage(
+            @RequestParam("signature") String signature,
+            @RequestParam("timestamp") String timestamp,
+            @RequestParam("nonce") String nonce,
+            @RequestBody WechatMessage message) {
+
+        log.info("收到微信消息推送: signature={}, timestamp={}, nonce={}",
+                signature, timestamp, nonce);
+        log.info("消息内容: {}", message);
+
+        return WxCallbackResp.success();
     }
 
 }
