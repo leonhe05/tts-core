@@ -24,6 +24,9 @@ public class GameRankResponse extends BaseResponse {
         @JsonProperty("nick_name")
         private String nickName;
 
+        @JsonProperty("avatar_url")
+        private String avatarUrl;
+
         @JsonProperty("score")
         private Integer score;
 
